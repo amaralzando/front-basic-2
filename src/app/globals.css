@@ -43,3 +43,18 @@ body, input, textarea, select, button{
     font-size: 93.75%;
   }
 }
+
+.sidebar{
+  scrollbar-width: thin;
+  scrollbar-color: #999999 transparent;
+}
+
+.sidebar::-webkit-scrollbar{
+  background: #999999;
+  width: 3px;
+}
+
+.sidebar::-webkit-scrollbar-thumb{
+  scrollbar-color: #999999;
+  border-radius: 10px;
+}
