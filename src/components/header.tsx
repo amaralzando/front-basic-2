@@ -9,7 +9,7 @@ const Header = () => {
     invokeToggleCollapse()
   }
 
-  const headerStyle = classNames("fixed bg-bgnavs w-full z-0 px-4 shadow-sm shadow-slate-500/40", {
+  const headerStyle = classNames("fixed bg-bgnavs w-full z-[99998] px-4 shadow-sm shadow-slate-500/40", {
     ["sm:pl-[5.6rem]"]: toggleCollapse,
     ["sm:pl-[20rem]"]: !toggleCollapse
   })
