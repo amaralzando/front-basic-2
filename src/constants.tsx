@@ -10,26 +10,10 @@ export const SIDENAV_ITEMS: SideNavItem[] = [
   },
   {
     show: true,
-    title: "Teste 1",
-    path: "/teste1",
-    icon: <Icon icon="lucide:home" width={24} height={24} />,
-  },
-  {
-    show: true,
-    title: "Teste 2",
-    path: "/teste2",
-    icon: <Icon icon="lucide:home" width={24} height={24} />,
-  },
-  {
-    show: true,
     title: "Dashboard",
     path: "/dashboard",
     icon: <Icon icon="lucide:folder" width={24} height={24} />,
-    subMenu: true,
-    subMenuItems: [
-      {show: true, title: "Dashboard", path: "/dashboard"},
-      {show: true, title: "Teste", path: "/dashboard/teste"}
-    ]
+    subMenu: false,
   },
   {
     show: true,

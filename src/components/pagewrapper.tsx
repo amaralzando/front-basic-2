@@ -6,9 +6,9 @@ const PageWrapper = ({ children}: LayoutElement) => {
 
     const { toggleCollapse } = useSideBarToggle();  
 
-    const pageStyle = classNames("bg-slate-50 flex-grow text-black p-2 mt-16 ", {
-    ["sm:pl-[5.6rem]"]: toggleCollapse,
-    ["pl-[20rem]"]: !toggleCollapse
+    const pageStyle = classNames("bg-slate-50 flex-grow p-2 text-black mt-16 ", {
+    ["sm:pl-[5.8rem]"]: toggleCollapse,
+    ["pl-[20.5rem]"]: !toggleCollapse
   })
 
   return (
