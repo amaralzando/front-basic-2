@@ -24,6 +24,7 @@ export async function signInRequest(data: SignInRequestData) {
     user: {
       name: user.name,
       email: user.email,
+      role: user.role,
     },
   };
 }
@@ -43,6 +44,7 @@ export async function recoverUserInformaation(token: string) {
     user: {
       name: user.name,
       email: user.email,
+      role: user.role,
     },
   };
 }

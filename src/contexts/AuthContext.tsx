@@ -9,6 +9,7 @@ import { recoverUserInformaation, signInRequest } from "../services/auth";
 type User = {
   name: string;
   email: string;
+  role: string;
 };
 
 type SignInData = {
@@ -31,7 +32,7 @@ interface AuthProviderProps {
 export const AuthContext = createContext({} as AuthContextType);
 
 export function AuthProvider({ children }: AuthProviderProps) {
-  const [user, setUser] = useState<User>({ name: "", email: "" });
+  const [user, setUser] = useState<User>({ name: "", email: "", role: "" });
   const [token, setToken] = useState<string>();
   const router = useRouter();
   const isAuthenticated = !!user;

@@ -1,13 +1,15 @@
 "use client";
 import { useSideBarToggle } from "@/src/hooks/use-sidebar-toggle";
-import { SideNavItem } from "@/src/types/type";
+import { SideNavItem } from "@/src/type";
 import classNames from "classnames";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { BsChevronRight } from "react-icons/bs";
+import { AuthContext } from "../contexts/AuthContext";
 
 export const SideBarMenuItem = ({ item }: { item: SideNavItem }) => {
+  const { user } = useContext(AuthContext);
   const { toggleCollapse } = useSideBarToggle();
 
   const pathname = usePathname();
@@ -33,65 +35,77 @@ export const SideBarMenuItem = ({ item }: { item: SideNavItem }) => {
   const dropdownMenuHeaderLink = classNames(inactiveLink, {
     ["bg-sidebar-muted rounded-b-none"]: subMenuOpen,
   });
+
+  const showMenuItem = () => {
+    if (!item.show) return false;
+    // Show if either no roles are defined or the user has a matching role
+    return (
+      !item.roles ||
+      item.roles.length === 0 ||
+      (user && item.roles.includes(user.role))
+    );
+  };
+
   return (
     <>
-      {item.submenu ? (
-        <div className="min-w-[18px]">
-          <a
-            className={`${dropdownMenuHeaderLink} ${
-              pathname.includes(item.path) ? activeLink : ""
+      {showMenuItem() &&
+        (item.submenu ? (
+          <div className="min-w-[18px]">
+            <a
+              className={`${dropdownMenuHeaderLink} ${
+                pathname.includes(item.path) ? activeLink : ""
+              }`}
+              onClick={toggleSubMenu}
+            >
+              <div className="min-w-[20px]">{item.icon}</div>
+              {!toggleCollapse && (
+                <>
+                  <span className="ml-3 text-base leading-6 font-semibold">
+                    {item.title}
+                  </span>
+                  <BsChevronRight
+                    className={`${
+                      subMenuOpen ? "rotate-90" : ""
+                    } ml-auto stroke-2 text-xs`}
+                  />
+                </>
+              )}
+            </a>
+            {subMenuOpen && !toggleCollapse && (
+              <div className="bg-sidebar-muted border-l-4">
+                <div className="grid gap-y-2 px-10 leading-5 py-3">
+                  {item.subMenuItems?.map((subItem, idx) => {
+                    return (
+                      <Link
+                        key={idx}
+                        href={subItem.path}
+                        className={`${navMenuDropdownItem} ${
+                          subItem.path === pathname
+                            ? " text-sidebar-muted-foreground font-medium "
+                            : " text-sidebar-foreground"
+                        }`}
+                      >
+                        <span>{subItem.title}</span>
+                      </Link>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+          </div>
+        ) : (
+          <Link
+            href={item.path}
+            className={`${inactiveLink} ${
+              item.path === pathname ? activeLink : ""
             }`}
-            onClick={toggleSubMenu}
           >
             <div className="min-w-[20px]">{item.icon}</div>
             {!toggleCollapse && (
-              <>
-                <span className="ml-3 text-base leading-6 font-semibold">
-                  {item.title}
-                </span>
-                <BsChevronRight
-                  className={`${
-                    subMenuOpen ? "rotate-90" : ""
-                  } ml-auto stroke-2 text-xs`}
-                />
-              </>
+              <span className="ml-3 leading-6 font-semibold">{item.title}</span>
             )}
-          </a>
-          {subMenuOpen && !toggleCollapse && (
-            <div className="bg-sidebar-muted border-l-4">
-              <div className="grid gap-y-2 px-10 leading-5 py-3">
-                {item.subMenuItems?.map((subItem, idx) => {
-                  return (
-                    <Link
-                      key={idx}
-                      href={subItem.path}
-                      className={`${navMenuDropdownItem} ${
-                        subItem.path === pathname
-                          ? " text-sidebar-muted-foreground font-medium "
-                          : " text-sidebar-foreground"
-                      }`}
-                    >
-                      <span>{subItem.title}</span>
-                    </Link>
-                  );
-                })}
-              </div>
-            </div>
-          )}
-        </div>
-      ) : (
-        <Link
-          href={item.path}
-          className={`${inactiveLink} ${
-            item.path === pathname ? activeLink : ""
-          }`}
-        >
-          <div className="min-w-[20px]">{item.icon}</div>
-          {!toggleCollapse && (
-            <span className="ml-3 leading-6 font-semibold">{item.title}</span>
-          )}
-        </Link>
-      )}
+          </Link>
+        ))}
     </>
   );
 };
