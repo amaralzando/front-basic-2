@@ -4,9 +4,11 @@ import {
   Card,
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/src/components/ui/card";
+import { TrendingUp } from "lucide-react";
 
 const viewOverview = () => {
   return (
@@ -111,11 +113,20 @@ const viewOverview = () => {
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
         <Card className="col-span-4">
           <CardHeader>
-            <CardTitle>Overview</CardTitle>
+            <CardTitle>Bar Chart</CardTitle>
+            <CardDescription>January - June 2024</CardDescription>
           </CardHeader>
-          <CardContent className="pl-2">
+          <CardContent className="p-2 my-3">
             <Overview />
           </CardContent>
+          <CardFooter className="flex-col items-start gap-2 text-sm">
+            <div className="flex gap-2 font-medium leading-none">
+              Trending up by 5.2% this month <TrendingUp className="h-4 w-4" />
+            </div>
+            <div className="leading-none text-muted-foreground">
+              Showing total visitors for the last 6 months
+            </div>
+          </CardFooter>
         </Card>
         <Card className="col-span-3">
           <CardHeader>

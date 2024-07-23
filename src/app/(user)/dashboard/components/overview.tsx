@@ -1,83 +1,54 @@
 "use client";
 
-import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis } from "recharts";
+import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
+
+import {
+  ChartConfig,
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from "@/src/components/ui/chart";
+const chartData = [
+  { month: "January", desktop: 186 },
+  { month: "February", desktop: 305 },
+  { month: "March", desktop: 237 },
+  { month: "April", desktop: 73 },
+  { month: "May", desktop: 209 },
+  { month: "June", desktop: 214 },
+];
+
+const chartConfig = {
+  desktop: {
+    label: "Desktop",
+    color: "hsl(var(--chart-1))",
+  },
+} satisfies ChartConfig;
 
 export function Overview() {
-  const data = [
-    {
-      name: "Jan",
-      total: 4152,
-    },
-    {
-      name: "Feb",
-      total: 5924,
-    },
-    {
-      name: "Mar",
-      total: 2251,
-    },
-    {
-      name: "Apr",
-      total: 5105,
-    },
-    {
-      name: "May",
-      total: 3864,
-    },
-    {
-      name: "Jun",
-      total: 5555,
-    },
-    {
-      name: "Jul",
-      total: 4270,
-    },
-    {
-      name: "Aug",
-      total: 4762,
-    },
-    {
-      name: "Sep",
-      total: 5306,
-    },
-    {
-      name: "Oct",
-      total: 2498,
-    },
-    {
-      name: "Nov",
-      total: 3292,
-    },
-    {
-      name: "Dec",
-      total: 1735,
-    },
-  ];
-
   return (
-    <ResponsiveContainer width="100%" height={350}>
-      <BarChart data={data}>
+    <ChartContainer config={chartConfig}>
+      <BarChart accessibilityLayer data={chartData}>
+        <CartesianGrid vertical={false} />
         <XAxis
-          dataKey="name"
-          stroke="#888888"
-          fontSize={12}
+          dataKey="month"
           tickLine={false}
+          tickMargin={10}
           axisLine={false}
+          tickFormatter={(value) => value.slice(0, 3)}
         />
         <YAxis
           stroke="#888888"
           fontSize={12}
           tickLine={false}
           axisLine={false}
-          tickFormatter={(value) => `${value}`}
+          tickFormatter={(value) => `$${value}`}
         />
-        <Bar
-          dataKey="total"
-          fill="currentColor"
-          radius={[4, 4, 0, 0]}
-          className="fill-primary"
+        <ChartTooltip
+          cursor={false}
+          content={<ChartTooltipContent hideLabel />}
         />
+        <Bar dataKey="desktop" fill="var(--color-desktop)" radius={8} />
       </BarChart>
-    </ResponsiveContainer>
+    </ChartContainer>
   );
 }
