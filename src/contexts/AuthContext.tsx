@@ -18,6 +18,7 @@ type SignInData = {
 
 type AuthContextType = {
   isAuthenticated: boolean;
+  token?: string;
   user?: User;
   signIn: (data: SignInData) => Promise<void>;
   logOut: () => void;
@@ -31,13 +32,14 @@ export const AuthContext = createContext({} as AuthContextType);
 
 export function AuthProvider({ children }: AuthProviderProps) {
   const [user, setUser] = useState<User>({ name: "", email: "" });
+  const [token, setToken] = useState<string>();
   const router = useRouter();
   const isAuthenticated = !!user;
 
   useEffect(() => {
     const { "frontbasic2.token": token } = parseCookies();
     if (token) {
-      recoverUserInformaation().then((res) => {
+      recoverUserInformaation(token).then((res) => {
         setUser(res.user);
       });
     }
@@ -57,8 +59,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
     api.defaults.headers["Authorization"] = `Bearer ${token}`;
 
     setUser(user);
+    setToken(token);
 
-    router.push("/");
+    router.push("/dashboard");
   }
 
   async function logOut() {
@@ -69,7 +72,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
   }
 
   return (
-    <AuthContext.Provider value={{ user, isAuthenticated, signIn, logOut }}>
+    <AuthContext.Provider
+      value={{ token, user, isAuthenticated, signIn, logOut }}
+    >
       {children}
     </AuthContext.Provider>
   );

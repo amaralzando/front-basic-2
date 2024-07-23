@@ -1,29 +1,58 @@
 "use client";
 
-import { api } from "@/src/services/api";
-import { useEffect, useState } from "react";
 import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis } from "recharts";
 
 export function Overview() {
-  const [data, setData] = useState();
-
-  useEffect(() => {
-    handleDataChart();
-  }, []);
-
-  function handleDataChart() {
-    api
-      .get("/overview")
-      .then((response) => {
-        console.log(response);
-        setData(response.data); // Extract data from the response object
-      })
-      .catch((error) => {
-        // Handle errors if the request fails
-        console.error("Error fetching data:", error);
-        // Consider setting an error state or showing a user-friendly message
-      });
-  }
+  const data = [
+    {
+      name: "Jan",
+      total: 4152,
+    },
+    {
+      name: "Feb",
+      total: 5924,
+    },
+    {
+      name: "Mar",
+      total: 2251,
+    },
+    {
+      name: "Apr",
+      total: 5105,
+    },
+    {
+      name: "May",
+      total: 3864,
+    },
+    {
+      name: "Jun",
+      total: 5555,
+    },
+    {
+      name: "Jul",
+      total: 4270,
+    },
+    {
+      name: "Aug",
+      total: 4762,
+    },
+    {
+      name: "Sep",
+      total: 5306,
+    },
+    {
+      name: "Oct",
+      total: 2498,
+    },
+    {
+      name: "Nov",
+      total: 3292,
+    },
+    {
+      name: "Dec",
+      total: 1735,
+    },
+  ];
 
   return (
     <ResponsiveContainer width="100%" height={350}>

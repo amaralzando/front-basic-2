@@ -61,7 +61,9 @@ export default function Login() {
     } catch (error) {
       if (error instanceof z.ZodError) {
         console.error(error.issues);
-        setISError("E-mail ou senha inválidos.");
+      }
+      if (error instanceof Error) {
+        setISError(error.message);
       }
     }
   }
@@ -71,7 +73,7 @@ export default function Login() {
       <div className="w-full m-auto sm:max-w-lg px-4">
         <Card>
           <CardHeader className="space-y-1">
-            <CardTitle className="text-2xl text-center">Conectar</CardTitle>
+            <CardTitle className="text-2xl text-center">Conectar-se</CardTitle>
             <CardDescription className="text-center">
               Entre com seu email e senha!
             </CardDescription>
