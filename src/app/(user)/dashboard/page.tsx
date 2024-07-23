@@ -1,12 +1,12 @@
-import { Overview } from "@/app/components/overview";
-import { RecentSales } from "@/app/components/recent-sales";
+import { Overview } from "@/src/app/components/overview";
+import { RecentSales } from "@/src/app/components/recent-sales";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
+} from "@/src/components/ui/card";
 
 export default function Dashboard() {
   return (

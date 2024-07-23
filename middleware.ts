@@ -1,4 +1,4 @@
-import { SIDENAV_ITEMS } from "@/app/menu_constants";
+import { SIDENAV_ITEMS } from "@/src/menu_constants";
 import { validateTokenUser } from "@/src/services/auth"; // Import your validation function
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";

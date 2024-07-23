@@ -1,4 +1,4 @@
-import { SideNavItemGroup } from "@/types/type";
+import { SideNavItemGroup } from "@/src/type";
 import {
   BsEnvelope,
   BsGear,

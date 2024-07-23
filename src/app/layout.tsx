@@ -1,4 +1,4 @@
-import { ThemeProvider } from "@/components/theme-provider";
+import { ThemeProvider } from "@/src/components/theme-provider";
 import { AuthProvider } from "@/src/contexts/AuthContext";
 import { Metadata } from "next";
 import { Karla } from "next/font/google";
