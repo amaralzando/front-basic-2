@@ -66,11 +66,13 @@ const usuarios = [
     name: "Admin",
     email: "admin@gmail.com",
     password: "Admin1234",
+    role: "ADMIN",
   },
   {
     token: "cb2284e2-1c60-48c3-a48f-a199da70d350",
     name: "Cliente",
     email: "cliente@gmail.com",
     password: "Cliente123",
+    role: "CLIENTE",
   },
 ];
