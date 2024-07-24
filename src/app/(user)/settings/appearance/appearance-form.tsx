@@ -16,11 +16,11 @@ import {
   FormMessage,
 } from "@/src/components/ui/form";
 import { RadioGroup, RadioGroupItem } from "@/src/components/ui/radio-group";
-import { toast } from "@/src/components/ui/use-toast";
 import { cn } from "@/src/lib/utils";
+import { useTheme } from "next-themes";
 
 const appearanceFormSchema = z.object({
-  theme: z.enum(["light", "dark"], {
+  theme: z.enum(["light", "dark", "custom"], {
     required_error: "Please select a theme.",
   }),
   font: z.enum(["inter", "manrope", "system"], {
@@ -33,24 +33,20 @@ type AppearanceFormValues = z.infer<typeof appearanceFormSchema>;
 
 // This can come from your database or API.
 const defaultValues: Partial<AppearanceFormValues> = {
-  theme: "light",
+  font: "system",
+  theme: "custom",
 };
 
 export function AppearanceForm() {
+  const { setTheme } = useTheme();
+
   const form = useForm<AppearanceFormValues>({
     resolver: zodResolver(appearanceFormSchema),
     defaultValues,
   });
 
   function onSubmit(data: AppearanceFormValues) {
-    toast({
-      title: "You submitted the following values:",
-      description: (
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-        </pre>
-      ),
-    });
+    setTheme(data.theme);
   }
 
   return (
@@ -71,8 +67,8 @@ export function AppearanceForm() {
                     )}
                     {...field}
                   >
-                    <option value="inter">Inter</option>
-                    <option value="manrope">Manrope</option>
+                    {/* <option value="inter">Inter</option>
+                    <option value="manrope">Manrope</option> */}
                     <option value="system">System</option>
                   </select>
                 </FormControl>
@@ -133,15 +129,15 @@ export function AppearanceForm() {
                     </FormControl>
                     <div className="items-center rounded-md border-2 border-muted bg-popover p-1 hover:bg-accent hover:text-accent-foreground">
                       <div className="space-y-2 rounded-sm bg-slate-950 p-2">
-                        <div className="space-y-2 rounded-md bg-slate-800 p-2 shadow-sm">
+                        <div className="space-y-2 rounded-md bg-black p-2 shadow-sm">
                           <div className="h-2 w-[80px] rounded-lg bg-slate-400" />
                           <div className="h-2 w-[100px] rounded-lg bg-slate-400" />
                         </div>
-                        <div className="flex items-center space-x-2 rounded-md bg-slate-800 p-2 shadow-sm">
+                        <div className="flex items-center space-x-2 rounded-md bg-black p-2 shadow-sm">
                           <div className="h-4 w-4 rounded-full bg-slate-400" />
                           <div className="h-2 w-[100px] rounded-lg bg-slate-400" />
                         </div>
-                        <div className="flex items-center space-x-2 rounded-md bg-slate-800 p-2 shadow-sm">
+                        <div className="flex items-center space-x-2 rounded-md bg-black p-2 shadow-sm">
                           <div className="h-4 w-4 rounded-full bg-slate-400" />
                           <div className="h-2 w-[100px] rounded-lg bg-slate-400" />
                         </div>
@@ -149,6 +145,32 @@ export function AppearanceForm() {
                     </div>
                     <span className="block w-full p-2 text-center font-normal">
                       Dark
+                    </span>
+                  </FormLabel>
+                </FormItem>
+                <FormItem>
+                  <FormLabel className="[&:has([data-state=checked])>div]:border-primary">
+                    <FormControl>
+                      <RadioGroupItem value="custom" className="sr-only" />
+                    </FormControl>
+                    <div className="items-center rounded-md border-2 border-muted bg-popover p-1 hover:bg-accent hover:text-accent-foreground">
+                      <div className="space-y-2 rounded-sm bg-[#32363E] p-2">
+                        <div className="space-y-2 rounded-md bg-white p-2 shadow-sm">
+                          <div className="h-2 w-[80px] rounded-lg bg-slate-400" />
+                          <div className="h-2 w-[100px] rounded-lg bg-slate-400" />
+                        </div>
+                        <div className="flex items-center space-x-2 rounded-md bg-white p-2 shadow-sm">
+                          <div className="h-4 w-4 rounded-full bg-slate-400" />
+                          <div className="h-2 w-[100px] rounded-lg bg-slate-400" />
+                        </div>
+                        <div className="flex items-center space-x-2 rounded-md bg-white p-2 shadow-sm">
+                          <div className="h-4 w-4 rounded-full bg-slate-400" />
+                          <div className="h-2 w-[100px] rounded-lg bg-slate-400" />
+                        </div>
+                      </div>
+                    </div>
+                    <span className="block w-full p-2 text-center font-normal">
+                      Custom
                     </span>
                   </FormLabel>
                 </FormItem>

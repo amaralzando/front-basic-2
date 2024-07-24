@@ -16,11 +16,6 @@ const sidebarNavItems = [
   },
   {
     show: true,
-    title: "Account",
-    href: "/settings/account",
-  },
-  {
-    show: true,
     title: "Appearance",
     href: "/settings/appearance",
   },
