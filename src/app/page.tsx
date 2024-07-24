@@ -1,146 +1,166 @@
+"use client";
+
+import { Button } from "@/src/components/ui/button";
 import {
   Card,
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
-  CardTitle
-} from "@/components/ui/card";
-import { Overview } from "./components/overview";
-import { RecentSales } from "./components/recent-sales";
+  CardTitle,
+} from "@/src/components/ui/card";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/src/components/ui/form";
+import { Input } from "@/src/components/ui/input";
+import { AuthContext } from "@/src/contexts/AuthContext";
+import { zodResolver } from "@hookform/resolvers/zod";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useContext, useState } from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import Progressbar from "../components/progressbar";
 
+const formSchema = z.object({
+  email: z
+    .string()
+    .email({
+      message:
+        "O e-mail deve ser um endereço válido (ex: usuario@exemplo.com).",
+    })
+    .min(2, {
+      message: "O e-mail deve ter pelo menos 2 caracteres.",
+    }),
+  password: z.string().refine((val) => val.length >= 8 && /[A-Z]/.test(val), {
+    message:
+      "A senha deve ter pelo menos 8 caracteres e conter pelo menos uma letra maiúscula.",
+  }),
+});
 
-export default function Home() {
+export default function Login() {
+  const { signIn } = useContext(AuthContext);
+  const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
+  const [isError, setISError] = useState("");
+
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+  });
+
+  async function onSubmit(data: z.infer<typeof formSchema>) {
+    try {
+      setIsLoading(true);
+      await signIn(data);
+      setIsLoading(false);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        console.error(error.issues);
+      }
+      if (error instanceof Error) {
+        setISError(error.message);
+      }
+    }
+  }
+
   return (
-    <>
-      <div className="flex-1 space-y-4 p-8 pt-6">
-        <div className="flex items-center justify-between space-y-2">
-          <h2 className="text-3xl font-bold tracking-tight">Dashboard</h2>
-        </div>
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">
-                Total Revenue
-              </CardTitle>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                className="h-4 w-4 text-muted-foreground"
+    <div className="relative flex flex-col justify-center items-center min-h-screen overflow-hidden">
+      <div className="w-full m-auto sm:max-w-lg px-4">
+        <Card>
+          <CardHeader className="space-y-1">
+            <CardTitle className="text-2xl text-center">Conectar-se</CardTitle>
+            <CardDescription className="text-center">
+              Entre com seu email e senha!
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="grid gap-4">
+            <Form {...form}>
+              <form
+                onSubmit={form.handleSubmit(onSubmit)}
+                className="space-y-8"
               >
-                <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
-              </svg>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">$45,231.89</div>
-              <p className="text-xs text-muted-foreground">
-                +20.1% from last month
-              </p>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">
-                Subscriptions
-              </CardTitle>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                className="h-4 w-4 text-muted-foreground"
-              >
-                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
-                <circle cx="9" cy="7" r="4" />
-                <path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" />
-              </svg>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">+2350</div>
-              <p className="text-xs text-muted-foreground">
-                +180.1% from last month
-              </p>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Sales</CardTitle>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                className="h-4 w-4 text-muted-foreground"
-              >
-                <rect width="20" height="14" x="2" y="5" rx="2" />
-                <path d="M2 10h20" />
-              </svg>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">+12,234</div>
-              <p className="text-xs text-muted-foreground">
-                +19% from last month
-              </p>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">
-                Active Now
-              </CardTitle>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                className="h-4 w-4 text-muted-foreground"
-              >
-                <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
-              </svg>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">+573</div>
-              <p className="text-xs text-muted-foreground">
-                +201 since last hour
-              </p>
-            </CardContent>
-          </Card>
-        </div>
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
-          <Card className="col-span-4">
-            <CardHeader>
-              <CardTitle>Overview</CardTitle>
-            </CardHeader>
-            <CardContent className="pl-2">
-              <Overview />
-            </CardContent>
-          </Card>
-          <Card className="col-span-3">
-            <CardHeader>
-              <CardTitle>Recent Sales</CardTitle>
-              <CardDescription>
-                You made 265 sales this month.
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <RecentSales />
-            </CardContent>
-          </Card>
-        </div>
+                <FormField
+                  control={form.control}
+                  name="email"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>E-mail</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="email"
+                          placeholder="Difite seu email"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="password"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Password</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="password"
+                          placeholder="Digite sua senha"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <Button
+                  disabled={isLoading}
+                  className="w-full h-12"
+                  type="submit"
+                >
+                  {isLoading ? (
+                    <div className="flex justify-center items-center w-[30px]">
+                      <Progressbar />
+                    </div>
+                  ) : (
+                    "Logar"
+                  )}
+                </Button>
+                {isError && (
+                  <span className="flex justify-center text-red-500">
+                    {isError}
+                  </span>
+                )}
+              </form>
+            </Form>
+          </CardContent>
+          <CardFooter className="flex flex-col">
+            {/* <p className="mt-2 text-xs text-center text-gray-700">
+              {" "}
+              Esqueceu sua senha?{" "}
+              <Link href="/register" className="text-blue-600 hover:underline">
+                Redefinir senha
+              </Link>
+            </p> */}
+            <p className="mt-2 text-xs text-center text-gray-700">
+              {" "}
+              Não possui uma conta?{" "}
+              <Link href="/register" className="text-blue-600 hover:underline">
+                Sign up
+              </Link>
+            </p>
+          </CardFooter>
+        </Card>
       </div>
-    </>
+    </div>
   );
 }

@@ -1,15 +1,3 @@
-"use client"
-
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table"
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -17,28 +5,41 @@ import {
   getCoreRowModel,
   getFilteredRowModel,
   getPaginationRowModel,
-  useReactTable
-} from "@tanstack/react-table"
-import * as React from "react"
+  useReactTable,
+} from "@tanstack/react-table";
+import * as React from "react";
 
-interface DataTableProps<TData, TValue>{
-  columns: ColumnDef<TData, TValue>[],
-  data: TData[]
+import { Button } from "@/src/components/ui/button";
+import { Input } from "@/src/components/ui/input";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/src/components/ui/table";
+
+interface DataTableProps<TData, TValue> {
+  columns: ColumnDef<TData, TValue>[];
+  data: TData[];
 }
 
-export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData, TValue>) {
+export function DataTable<TData, TValue>({
+  data,
+  columns,
+}: DataTableProps<TData, TValue>) {
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
-  )
-
+  );
   const table = useReactTable({
     data,
     columns,
     initialState: {
       pagination: {
-        "pageIndex": 0,
-        "pageSize": 5,
-      }
+        pageIndex: 0,
+        pageSize: 5,
+      },
     },
     onColumnFiltersChange: setColumnFilters,
     getCoreRowModel: getCoreRowModel(),
@@ -47,13 +48,13 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
     state: {
       columnFilters,
     },
-  })
+  });
 
   return (
     <div className="w-full">
-      <div className="flex items-center py-4">
+      <div className="flex mb-2">
         <Input
-          placeholder="Filter products..."
+          placeholder="Filter product..."
           value={(table.getColumn("product")?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
             table.getColumn("product")?.setFilterValue(event.target.value)
@@ -76,7 +77,7 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
                             header.getContext()
                           )}
                     </TableHead>
-                  )
+                  );
                 })}
               </TableRow>
             ))}
@@ -136,5 +137,5 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
         </div>
       </div>
     </div>
-  )
+  );
 }

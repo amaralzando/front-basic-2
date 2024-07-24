@@ -1,26 +1,57 @@
+"use client";
+import { AuthContext } from "@/src/contexts/AuthContext";
+import { getInitials } from "@/src/helpers/utis";
+import { useTheme } from "next-themes";
+import { useContext } from "react";
+import { Avatar } from "./ui/avatar";
+import { Button } from "./ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from "./ui/dropdown-menu";
 
-const UserNav = () => {
+export function UserNav() {
+  const { user, logOut } = useContext(AuthContext);
+  const { theme } = useTheme();
+
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger>Open</DropdownMenuTrigger>
-      <DropdownMenuContent>
-        <DropdownMenuLabel>My Account</DropdownMenuLabel>
+      <DropdownMenuTrigger asChild>
+        <Button variant="ghost" className="relative h-10 w-10 rounded-full ">
+          <Avatar
+            className={`h-10 w-10 rounded-full flex items-center
+        justify-center text-center font-bold ${
+          theme == "light" ? "bg-black text-white" : "bg-white text-black"
+        }`}
+          >
+            {/* <AvatarImage src="/avatars/02.png" alt="" /> */}
+            {getInitials(user?.name)}
+          </Avatar>
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent className="w-56 z-[99998]">
+        <DropdownMenuLabel>
+          <div className="flex flex-col space-y-1">
+            <p className="text-sm font-medium leading-none">{user?.name}</p>
+            <p className="text-xs leading-none text-muted-foreground">
+              {user?.email}
+            </p>
+          </div>
+        </DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem>Profile</DropdownMenuItem>
-        <DropdownMenuItem>Billing</DropdownMenuItem>
-        <DropdownMenuItem>Team</DropdownMenuItem>
-        <DropdownMenuItem>Subscription</DropdownMenuItem>
+        <DropdownMenuGroup>
+          <DropdownMenuItem>Settings</DropdownMenuItem>
+        </DropdownMenuGroup>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem>
+          <a onClick={logOut}>Log out</a>
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );
-};
-
-export default UserNav;
+}

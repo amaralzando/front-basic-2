@@ -1,68 +1,111 @@
-'use client'
-
-import { useSideBarToggle } from "@/hooks/use-sidebar-toggle";
-import { MenuItemWithSubMenuProps } from "@/types";
-import { Icon } from "@iconify/react";
+"use client";
+import { useSideBarToggle } from "@/src/hooks/use-sidebar-toggle";
+import { SideNavItem } from "@/src/type";
+import classNames from "classnames";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useContext, useState } from "react";
+import { BsChevronRight } from "react-icons/bs";
+import { AuthContext } from "../contexts/AuthContext";
 
-const SidebarMenuItem = ({ item }: MenuItemWithSubMenuProps) => {
-  const linkStyle = "flex items-center min-h-[40px] h-full text-bgText rounded-md py-2 px-4 hover:text-white transition duration-300 easy-in-out";
-  const activeLinkStyle = "text-white bg-actions"
-  const ddLinkStyle = linkStyle;
-  const navMenuDropdownItem = 'text-bgText py-2 px-4 hover:text-white transition duration-300 easy-in-out'
-  
-    const { toggleCollapse } = useSideBarToggle();  
-  const pathName = usePathname();
+export const SideBarMenuItem = ({ item }: { item: SideNavItem }) => {
+  const { user } = useContext(AuthContext);
+  const { toggleCollapse } = useSideBarToggle();
+
+  const pathname = usePathname();
+
   const [subMenuOpen, setSubMenuOpen] = useState(false);
+
   const toggleSubMenu = () => {
-    setSubMenuOpen(!subMenuOpen)
-  }
+    setSubMenuOpen(!subMenuOpen);
+  };
+
+  const inactiveLink = classNames(
+    "flex items-center min-h-[40px] h-full text-sidebar-foreground py-2 px-4 hover:text-sidebar-muted-foreground  hover:bg-sidebar-muted rounded-md transition duration-200",
+    { ["justify-center"]: toggleCollapse }
+  );
+
+  const activeLink = classNames(
+    " text-sidebar-muted-foreground bg-sidebar-muted"
+  );
+
+  const navMenuDropdownItem =
+    "text-red py-2 px-4 hover:text-sidebar-muted-foreground transition duration-200 rounded-md";
+
+  const dropdownMenuHeaderLink = classNames(inactiveLink, {
+    ["bg-sidebar-muted rounded-b-none"]: subMenuOpen,
+  });
+
+  const showMenuItem = () => {
+    if (!item.show) return false;
+    // Show if either no roles are defined or the user has a matching role
+    return (
+      !item.roles ||
+      item.roles.length === 0 ||
+      (user && item.roles.includes(user.role))
+    );
+  };
 
   return (
     <>
-      {
-        item.subMenu ? (
-          <div className="rounded-md min-w-[18px]">
-            <a className={`${ddLinkStyle} ${pathName.includes(item.path) ? activeLinkStyle : ''}`} onClick={toggleSubMenu}>
-              {item.icon}
-              {
-                !toggleCollapse && 
+      {showMenuItem() &&
+        (item.submenu ? (
+          <div className="min-w-[18px]">
+            <a
+              className={`${dropdownMenuHeaderLink} ${
+                pathname.includes(item.path) ? activeLink : ""
+              }`}
+              onClick={toggleSubMenu}
+            >
+              <div className="min-w-[20px]">{item.icon}</div>
+              {!toggleCollapse && (
                 <>
-                  <span className="ml-3 leading-0 font-semibold">{item.title}</span>
-                  <Icon className={`${subMenuOpen ? "rotate-90" : ""} ml-auto stroke-2 text-xs`} 
-                    icon="material-symbols:chevron-right" width={24} height={24}/>
+                  <span className="ml-3 text-base leading-6 font-semibold">
+                    {item.title}
+                  </span>
+                  <BsChevronRight
+                    className={`${
+                      subMenuOpen ? "rotate-90" : ""
+                    } ml-auto stroke-2 text-xs`}
+                  />
                 </>
-              }
+              )}
             </a>
-           { subMenuOpen &&
-             <div className="bg-actions border-l-4">
-                <div className="grid gap-y-2 px-10 py-3 leading-5">
-                  {
-                    item.subMenuItems?.map((subItem, index) => {
+            {subMenuOpen && !toggleCollapse && (
+              <div className="bg-sidebar-muted border-l-4">
+                <div className="grid gap-y-2 px-10 leading-5 py-3">
+                  {item.subMenuItems?.map((subItem, idx) => {
                     return (
-                      <Link key={index} href={subItem.path} className={`${navMenuDropdownItem} ${subItem.path === pathName ? activeLinkStyle : ''}`} >
+                      <Link
+                        key={idx}
+                        href={subItem.path}
+                        className={`${navMenuDropdownItem} ${
+                          subItem.path === pathname
+                            ? " text-sidebar-muted-foreground font-medium "
+                            : " text-sidebar-foreground"
+                        }`}
+                      >
                         <span>{subItem.title}</span>
                       </Link>
-                    )
-                  })
-                  }
+                    );
+                  })}
+                </div>
               </div>
-            </div>
-           }
+            )}
           </div>
         ) : (
-          <Link href={item.path} className={`${ddLinkStyle} ${item.path === pathName ? activeLinkStyle : ''}`}>
-            {item.icon}
-            {
-              !toggleCollapse && <span className="ml-3 leading-0 font-semibold">{item.title}</span>
-            }
+          <Link
+            href={item.path}
+            className={`${inactiveLink} ${
+              item.path === pathname ? activeLink : ""
+            }`}
+          >
+            <div className="min-w-[20px]">{item.icon}</div>
+            {!toggleCollapse && (
+              <span className="ml-3 leading-6 font-semibold">{item.title}</span>
+            )}
           </Link>
-        )
-      }
+        ))}
     </>
-  )
-}
-
-export default SidebarMenuItem
+  );
+};

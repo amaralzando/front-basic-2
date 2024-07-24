@@ -1,21 +1,17 @@
-import { useSideBarToggle } from "@/hooks/use-sidebar-toggle";
-import { LayoutElement } from "@/types";
+"use client";
+import { useSideBarToggle } from "@/src/hooks/use-sidebar-toggle";
 import classNames from "classnames";
+import { ReactNode } from "react";
 
-const PageWrapper = ({ children}: LayoutElement) => {
+export default function PageWrapper({ children }: { children: ReactNode }) {
+  const { toggleCollapse } = useSideBarToggle();
+  const bodyStyle = classNames(
+    "bg-background flex flex-col mt-16 py-4 p-4 h-full overflow-y-auto",
+    {
+      ["sm:pl-[21rem]"]: !toggleCollapse,
+      ["sm:pl-[6.4rem]"]: toggleCollapse,
+    }
+  );
 
-    const { toggleCollapse } = useSideBarToggle();  
-
-    const pageStyle = classNames("bg-slate-50 flex-grow p-2 text-black mt-16 ", {
-    ["sm:pl-[5.8rem]"]: toggleCollapse,
-    ["pl-[20.5rem]"]: !toggleCollapse
-  })
-
-  return (
-    <div className={pageStyle} >
-      {children}
-    </div>
-  )
+  return <div className={bodyStyle}>{children}</div>;
 }
-
-export default PageWrapper

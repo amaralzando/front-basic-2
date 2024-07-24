@@ -1,32 +1,32 @@
-'use client'
-
-import Header from "@/components/header";
-import PageWrapper from "@/components/pagewrapper";
-import Sidebar from "@/components/sidebar";
+import { ThemeProvider } from "@/src/components/theme-provider";
+import { AuthProvider } from "@/src/contexts/AuthContext";
+import { Metadata } from "next";
 import { Inter } from "next/font/google";
-import { useState } from "react";
 import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
 
+export const metadata: Metadata = {
+  title: "Gasa admin dashboard",
+  description: "NextJs admin dashboard created by gasa",
+};
+
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
-
-  const [toggleCollapse, setToggleCollapse] = useState(false);
-
+}) {
   return (
-    <html lang="pt-BR">
-      <body className={inter.className}>
-        <div className="flex min-h-screen">
-          <Sidebar/>
-          <Header/>
-          <PageWrapper >
-            {children}
-          </PageWrapper>
-        </div>
+    <html lang="en" suppressHydrationWarning>
+      <body className={inter.className + " h-screen overflow-hidden"}>
+        <ThemeProvider
+          themes={["dark", "custom", "light"]}
+          attribute="class"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <AuthProvider>{children}</AuthProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

@@ -1,33 +1,40 @@
-import { useSideBarToggle } from "@/hooks/use-sidebar-toggle";
-import { Icon } from "@iconify/react";
+"use client";
+import { useSideBarToggle } from "@/src/hooks/use-sidebar-toggle";
 import classNames from "classnames";
+import { BsList } from "react-icons/bs";
+import { UserNav } from "./usernav";
+import { ThemeSwitcher } from "./theme-switcher";
 
-const Header = () => {
-
-  const { toggleCollapse, invokeToggleCollapse } = useSideBarToggle();  
-  const sideBarToggle = () => {
-    invokeToggleCollapse()
-  }
-
-  const headerStyle = classNames("fixed bg-bgnavs w-full z-[99998] px-4 shadow-sm shadow-slate-500/40", {
-    ["sm:pl-[5.6rem]"]: toggleCollapse,
-    ["sm:pl-[20rem]"]: !toggleCollapse
-  })
-
+export default function Header() {
+  const { toggleCollapse, invokeToggleCollapse } = useSideBarToggle();
+  const sidebarToggle = () => {
+    invokeToggleCollapse();
+  };
+  const headerStyle = classNames(
+    "bg-sidebar fixed w-full z-[99997] px-4 shadow-sm shadow-slate-500/40",
+    {
+      ["sm:pl-[20rem]"]: !toggleCollapse,
+      ["sm:pl-[5.6rem]"]: toggleCollapse,
+    }
+  );
   return (
     <header className={headerStyle}>
-      <div className="flex items-center justify-between h-16">
-        <button onClick={sideBarToggle} className="order-2 sm:order-1 bg-actions text-bgText hover:bg-white ml-3 rounded-md h-[30px] shadow-md shadow-black/10 transition duration-300 ease-in-out flex items-center justify-center">
-          <Icon icon='material-symbols:playlist-play' width={24} height={24}/>
+      <div className="h-16 flex items-center justify-between">
+        <button
+          onClick={sidebarToggle}
+          aria-label="Toggle Sidebar"
+          className="order-2 sm:order-1 shrink-btn float-right bg-sidebar-muted text-sidebar-muted-foreground hover:bg-foreground hover:text-background ml-3 rounded-md w-[30px] h-[30px] flex items-center justify-center shadow-md shadow-black/10  transition duration-300 ease-in-out"
+        >
+          <BsList />
         </button>
-        <div className="order-1 sm:order-2 h-10 w-10 rounded-full bg-actions hover:bg-white flex items-center justify-center text-center transition duration-300 ease-in-out">
-          <span className="font-semibold text-sm">
-            GA
-          </span>
+
+        <div className="flex items-center justify-between sm:order-2 order-1">
+          <div className="p-2">
+            <ThemeSwitcher></ThemeSwitcher>
+          </div>
+          <UserNav />
         </div>
       </div>
     </header>
-  )
+  );
 }
-
-export default Header
