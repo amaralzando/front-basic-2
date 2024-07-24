@@ -25,6 +25,7 @@ import { useRouter } from "next/navigation";
 import { useContext, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import Progressbar from "../components/progressbar";
 
 const formSchema = z.object({
   email: z
@@ -45,6 +46,7 @@ const formSchema = z.object({
 export default function Login() {
   const { signIn } = useContext(AuthContext);
   const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
   const [isError, setISError] = useState("");
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -57,7 +59,9 @@ export default function Login() {
 
   async function onSubmit(data: z.infer<typeof formSchema>) {
     try {
+      setIsLoading(true);
       await signIn(data);
+      setIsLoading(false);
     } catch (error) {
       if (error instanceof z.ZodError) {
         console.error(error.issues);
@@ -118,8 +122,18 @@ export default function Login() {
                     </FormItem>
                   )}
                 />
-                <Button className="w-full" type="submit">
-                  Logar
+                <Button
+                  disabled={isLoading}
+                  className="w-full h-12"
+                  type="submit"
+                >
+                  {isLoading ? (
+                    <div className="flex justify-center items-center w-[30px]">
+                      <Progressbar />
+                    </div>
+                  ) : (
+                    "Logar"
+                  )}
                 </Button>
                 {isError && (
                   <span className="flex justify-center text-red-500">

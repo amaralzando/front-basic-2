@@ -60,8 +60,8 @@ export const SIDENAV_ITEMS: SideNavItemGroup[] = [
     menuList: [
       {
         show: true,
-        title: "Account",
-        path: "/account",
+        title: "Settings",
+        path: "/settings",
         protected: true,
         icon: <BsGear size={20} />,
       },
